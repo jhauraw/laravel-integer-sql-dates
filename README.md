@@ -16,19 +16,21 @@ I've only included the relevant files for the example. If you composer create ne
 
 It should work out of the box with the default Laravel "hello" route mapped to / on default installs.
 
+_NOTE_: `hello.php` has a 3 second `sleep()` before the `UPDATE` is run so the timestamp can be different. Just sayin' in case you run the example and it seems to hang.
+
 ## Overrides
 
 Basically, I approached it by creating a `Base.php` model and in it overriding the necessary `\Eloquent\Model.php` methods and one `\Query\SQLServerGrammer.php` method.
 
 Then in your Models or Repositories you will need to `extend` the `Base` model to bring in the __override__ methods.
 
-## output.html
+## Files
 
-An xdebug dump of the before and after from `INSERTING` a new record and `UPDATING` it.
-
-## users.sql
-
-Simple db table schema for testing. Recommend SQLite3 for quick setup.
+  * `app/models/Base.php`: Contains the override methods.
+  * `app/models/User.php`: Just a simple model to show how it inherits the overrides and allows us to do the DB stuff for the example.
+  * `app/views/hello.php`: INSERTs a record, UPDATES it, outputs a bunch of `var_dump` and `QueryLog` so you can see how the overrides work.
+  * `output.html`: An xdebug dump of the before and after from `INSERTING` a new record and `UPDATING` it. Drag/Drop on your browser to see the whole process.
+  * `users.sql` Simple db table schema for testing. Recommend SQLite3 for quick setup.
 
 ## Improvements?
 
