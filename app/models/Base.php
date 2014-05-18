@@ -28,12 +28,11 @@ class Base extends Eloquent {
     return $value;
   }
 
-  /*
-  protected function asDateTime($value)
-  {
-    // Uncomment if you don't want Carbon API on SELECTs
-  }
-  */
+  // Uncomment, if you don't want Carbon API on SELECTs
+  // protected function asDateTime($value)
+  // {
+  //   return $value;
+  // }
 
   /**
    * Reset the format for database stored dates to Unix Timestamp
