@@ -5,6 +5,10 @@ How to use INTEGER UNIX Timestamps for your MySQL dates in Laravel, while preser
 
 I have been using ints to store my date/time info in MySQL and really like not worrying about MySQL transforming dates and what timezone it is running in vs. what timezone the machine (PHP) is running in. I searched around for a solution and came up with this one, which was best for the purpose I needed it for.
 
+## Laravel Forums Thread
+
+There is also a [discussion](http://laravel.io/forum/05-18-2014-integer-dates-with-sql-database-in-laravel) on the Laravel forums.
+
 ## Why use INTEGER (a.k.a ints) for Datetime?
 
   * You can keep 100% of your date manipulation, comparison and presentation in one place: PHP.
