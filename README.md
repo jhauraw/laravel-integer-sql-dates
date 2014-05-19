@@ -31,7 +31,6 @@ Then in your Models or Repositories you will need to `extend` the `Base` model t
 ```php
 <?php
 
-// app/models/Base.php
 class Base extends Eloquent {
 
   /**
@@ -48,7 +47,10 @@ class Base extends Eloquent {
   }
 
   /**
-   * Don't mutate our (int) to (string) '2000-00-00 00:00:00' on INSERT/UPDATE
+   * Don't mutate our
+   *  (int, UTC Epoch) 1400468556
+   *  to (string, MySQL TIMESTAMP) '2000-00-00 00:00:00'
+   *  on INSERT or UPDATE
    *
    * Overrides:
    * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
