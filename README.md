@@ -5,61 +5,67 @@ How to use INTEGER UNIX Timestamps for your MySQL dates in Laravel, while preser
 
 I have been using ints for my date columns in MySQL and really like not worrying about MySQL transforming dates and what timezone it is running in vs. what timezone the machine is running in. I searched around for a solution and came up with this one, which was best for the purpose I needed it for.
 
+## Overrides
+
+Basically, I approached it by creating a `Base.php` model and in it overriding the necessary `\Eloquent\Model.php` methods and one `\Query\SQLServerGrammer.php` method.
+
+Then in your Models or Repositories you will need to `extend` the `Base` model to bring in the __override__ methods.
+
 ## The main Overrides Code - models/Base.php
-  ```php
-  <?php
+```php
+<?php
 
-  // app/models/Base.php
-  class Base extends Eloquent {
+// app/models/Base.php
+class Base extends Eloquent {
 
-    /**
-     * Get a fresh timestamp for the model.
-     *
-     * Overrides:
-     * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
-     *
-     * @return (int) timestamp
-     */
-    public function freshTimestamp()
-    {
-      return time();
-    }
-
-    /**
-     * Don't mutate our (int) to string
-     *
-     * Overrides:
-     * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
-     *
-     * @return (int) timestamp
-     */
-    public function fromDateTime($value)
-    {
-      return $value;
-    }
-
-    // Uncomment, if you don't want Carbon API on SELECTs
-    // protected function asDateTime($value)
-    // {
-    //   return $value;
-    // }
-
-    /**
-     * Reset the format for database stored dates to Unix Timestamp
-     *
-     * Overrides:
-     * vendor/laravel/framework/src/Illuminate/Database/Query/Grammars/SqlServerGrammar.php
-     *
-     * @return string
-     */
-    public function getDateFormat()
-    {
-      return 'U'; // PHP date() Seconds since the Unix Epoch
-    }
+  /**
+   * Get a fresh timestamp for the model.
+   *
+   * Overrides:
+   * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
+   *
+   * @return (int) timestamp
+   */
+  public function freshTimestamp()
+  {
+    return time();
   }
-  ```
 
-## What it is intended to do
+  /**
+   * Don't mutate our (int) to string
+   *
+   * Overrides:
+   * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
+   *
+   * @return (int) timestamp
+   */
+  public function fromDateTime($value)
+  {
+    return $value;
+  }
+
+  // Uncomment, if you don't want Carbon API on SELECTs
+  // protected function asDateTime($value)
+  // {
+  //   return $value;
+  // }
+
+  /**
+   * Reset the format for database stored dates to Unix Timestamp
+   *
+   * Overrides:
+   * vendor/laravel/framework/src/Illuminate/Database/Query/Grammars/SqlServerGrammar.php
+   *
+   * @return string
+   */
+  public function getDateFormat()
+  {
+    return 'U'; // PHP date() Seconds since the Unix Epoch
+  }
+}
+```
+
+## Intent, Requisites
 
   * Allow integer Unix Timestamps that __are not__ converted or manipulated by Laravel, it's Carbon Date package or MySQL.
   * Preserve Laravel's cool helper functions that automatically update your `created_at` and `updated_at` (or any column names you add to the Laravel $dates() array). As you can see in the example file `hello.php` the code's SQL statements are not including any date columns, but letting Laravel provide them. BUT you can see in the `output.html` file (or by loading up the app and running / yourself) that Laravel is inserting (int) type timestamps into our date columns. Neat!
@@ -68,15 +74,11 @@ I have been using ints for my date columns in MySQL and really like not worrying
 
 I've only included the relevant files for the example. If you composer create new project, just copy over all the files in the `app` directory. There is also a basic `user.sql` table schema so you can add a quick SQLite3 database if you want to test. Maybe someone can create the migrations and PR it.
 
+## Demo
+
 It should work out of the box with the default Laravel "hello" route mapped to / on default installs.
 
 _NOTE_: `hello.php` has a 3 second `sleep()` before the `UPDATE` is run so the timestamp can be different. Just sayin' in case you run the example and it seems to hang.
-
-## Overrides
-
-Basically, I approached it by creating a `Base.php` model and in it overriding the necessary `\Eloquent\Model.php` methods and one `\Query\SQLServerGrammer.php` method.
-
-Then in your Models or Repositories you will need to `extend` the `Base` model to bring in the __override__ methods.
 
 ## Files
 
@@ -88,4 +90,4 @@ Then in your Models or Repositories you will need to `extend` the `Base` model t
 
 ## Improvements?
 
-It would be great if someone could contribute a way to have the overrides be more __global__ so you don't have to `extend` each Model.
+It would be great if someone could contribute a way to have the overrides be more __global__ so you don't have to `extend` each Model. Would it be better as a `Package`?
