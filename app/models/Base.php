@@ -16,7 +16,7 @@ class Base extends Eloquent {
   }
 
   /**
-   * Don't mutate our (int) to string
+   * Don't mutate our (int) to (string) '2000-00-00 00:00:00' on INSERT/UPDATE
    *
    * Overrides:
    * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
