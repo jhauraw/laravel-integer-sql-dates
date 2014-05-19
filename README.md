@@ -7,12 +7,15 @@ I have been using ints to store my date/time info in MySQL and really like not w
 
 ## Why use INTS for Datetime?
 
+  * You can keep 100% of your date manipulation, comparison and presentation in one place: PHP.
   * Because thinking of/considering/dealing with timezones complicate your application level (your code, third-party APIs, database servers, CDNs)
   * So you don't have to worry about what timezone MySQL is using vs. what your server is using or PHP is pushing
   * Because [Stripe's](http://www.stripe.com/) API sends everything to you in UTC epochs. You do use Stripe right?
   * Because it might just give you the warm fuzzies instead a red face like MySQL DATETIME will
+  * Plus: http://forum.kohanaframework.org/discussion/1404/int-vs-datetime-for-dates-in-databases
 
-Further reading:
+
+Read these articles and see how complex it can be when you don't use INTS:
 
   * https://web.ivy.net/~carton/rant/MySQL-timezones.txt
   * http://stackoverflow.com/questions/19023978/should-mysql-have-its-timezone-set-to-utc
