@@ -11,7 +11,7 @@ Basically, I approached it by creating a `Base.php` model and in it overriding t
 
 Then in your Models or Repositories you will need to `extend` the `Base` model to bring in the __override__ methods.
 
-## The main Overrides Code - models/Base.php
+## app/models/Base.php
 ```php
 <?php
 
