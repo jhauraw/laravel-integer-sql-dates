@@ -3,7 +3,20 @@ Laravel Integer SQL Dates
 
 How to use INTEGER UNIX Timestamps for your MySQL dates in Laravel, while preserving the auto-update magic and Carbon API.
 
-I have been using ints for my date columns in MySQL and really like not worrying about MySQL transforming dates and what timezone it is running in vs. what timezone the machine is running in. I searched around for a solution and came up with this one, which was best for the purpose I needed it for.
+I have been using ints to store my date/time info in MySQL and really like not worrying about MySQL transforming dates and what timezone it is running in vs. what timezone the machine (PHP) is running in. I searched around for a solution and came up with this one, which was best for the purpose I needed it for.
+
+## Why use INTS for Datetime?
+
+  * Because thinking of/considering/dealing with timezones complicate your application level (your code, third-party APIs, database servers, CDNs)
+  * So you don't have to worry about what timezone MySQL is using vs. what your server is using or PHP is pushing
+  * Because [Stripe's](http://www.stripe.com/) API sends everything to you in UTC epochs. You do use Stripe right?
+  * Because it might just give you the warm fuzzies instead a red face like MySQL DATETIME will
+
+Further reading:
+
+  * https://web.ivy.net/~carton/rant/MySQL-timezones.txt
+  * http://stackoverflow.com/questions/19023978/should-mysql-have-its-timezone-set-to-utc
+  * http://stackoverflow.com/questions/2532729/daylight-saving-time-and-time-zone-best-practices
 
 ## Overrides
 
