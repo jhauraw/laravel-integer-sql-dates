@@ -5,6 +5,60 @@ How to use INTEGER UNIX Timestamps for your MySQL dates in Laravel, while preser
 
 I have been using ints for my date columns in MySQL and really like not worrying about MySQL transforming dates and what timezone it is running in vs. what timezone the machine is running in. I searched around for a solution and came up with this one, which was best for the purpose I needed it for.
 
+## The main Overrides Code - models/Base.php
+  ```php
+  <?php
+
+  // app/models/Base.php
+  class Base extends Eloquent {
+
+    /**
+     * Get a fresh timestamp for the model.
+     *
+     * Overrides:
+     * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
+     *
+     * @return (int) timestamp
+     */
+    public function freshTimestamp()
+    {
+      return time();
+    }
+
+    /**
+     * Don't mutate our (int) to string
+     *
+     * Overrides:
+     * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
+     *
+     * @return (int) timestamp
+     */
+    public function fromDateTime($value)
+    {
+      return $value;
+    }
+
+    // Uncomment, if you don't want Carbon API on SELECTs
+    // protected function asDateTime($value)
+    // {
+    //   return $value;
+    // }
+
+    /**
+     * Reset the format for database stored dates to Unix Timestamp
+     *
+     * Overrides:
+     * vendor/laravel/framework/src/Illuminate/Database/Query/Grammars/SqlServerGrammar.php
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+      return 'U'; // PHP date() Seconds since the Unix Epoch
+    }
+  }
+  ```
+
 ## What it is intended to do
 
   * Allow integer Unix Timestamps that __are not__ converted or manipulated by Laravel, it's Carbon Date package or MySQL.
@@ -35,55 +89,3 @@ Then in your Models or Repositories you will need to `extend` the `Base` model t
 ## Improvements?
 
 It would be great if someone could contribute a way to have the overrides be more __global__ so you don't have to `extend` each Model.
-
-```php
-<?php
-
-class Base extends Eloquent {
-
-  /**
-   * Get a fresh timestamp for the model.
-   *
-   * Overrides:
-   * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
-   *
-   * @return (int) timestamp
-   */
-  public function freshTimestamp()
-  {
-    return time();
-  }
-
-  /**
-   * Don't mutate our (int) to string
-   *
-   * Overrides:
-   * vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
-   *
-   * @return (int) timestamp
-   */
-  public function fromDateTime($value)
-  {
-    return $value;
-  }
-
-  // Uncomment, if you don't want Carbon API on SELECTs
-  // protected function asDateTime($value)
-  // {
-  //   return $value;
-  // }
-
-  /**
-   * Reset the format for database stored dates to Unix Timestamp
-   *
-   * Overrides:
-   * vendor/laravel/framework/src/Illuminate/Database/Query/Grammars/SqlServerGrammar.php
-   *
-   * @return string
-   */
-  public function getDateFormat()
-  {
-    return 'U'; // PHP date() Seconds since the Unix Epoch
-  }
-}
-```
